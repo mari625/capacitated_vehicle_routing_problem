@@ -9,7 +9,8 @@ def count_initial_pheromone(instance, group):
         for j in range(len(group)):
             if i == j:
                 continue
-            min_dist = min(min_dist, instance["edge_weight"][group[i]][group[j]])
+            if instance["edge_weight"][group[i]][group[j]] != 0:
+                min_dist = min(min_dist, instance["edge_weight"][group[i]][group[j]])
     
     return float(1/((len(group) + 1) * min_dist))
 
@@ -27,11 +28,14 @@ def count_client_utilities(instance, group, visited, pheromones, previous_client
     utilities = [0 for _ in range(len(group))]
 
     for i in range(len(group)):
-        if group[i] == 0:
+        if i == 0:
             continue
 
         if i not in visited:
-            utilities[i] = float(pheromones[previous_client][i] / ((instance["edge_weight"][group[previous_client]][group[i]]) ** params["beta"]))
+            if instance["edge_weight"][group[previous_client]][group[i]] != 0:
+                utilities[i] = float(pheromones[previous_client][i] / ((instance["edge_weight"][group[previous_client]][group[i]]) ** params["beta"]))
+            else:
+                utilities[i] = float("inf")
     
     return utilities
 
@@ -55,12 +59,13 @@ def ant_run(group, instance, pheromones, params, t_0):
 
         max_utility = max(utilities)
 
-        if max_utility == 0:
+        if max_utility ==0:
             break
 
         chosen_index = 0
 
-        if np.random.rand() < params["q0"]:
+
+        if max_utility == float("inf") or np.random.rand() < params["q0"]:
             for j, utility in enumerate(utilities):
                 if utility == max_utility:
                     chosen_index = j
@@ -100,11 +105,12 @@ def global_update(pheromones, params, route, distance):
 
 
 def aco(instance, group, params):
-    group.insert(0, int(instance["depot"][0]))
+    group_copy = group.copy()
+    group_copy.insert(0, int(instance["depot"][0]))
 
-    t_0 = count_initial_pheromone(instance, group)
+    t_0 = count_initial_pheromone(instance, group_copy)
 
-    pheromones = [[t_0 for _ in range(len(group))] for _ in range(len(group))]
+    pheromones = [[t_0 for _ in range(len(group_copy))] for _ in range(len(group_copy))]
 
     best_distance = float("inf")
     prev_best_distance = best_distance
@@ -120,11 +126,11 @@ def aco(instance, group, params):
     while accumulated_number <= stagnation_number and number_iterations < 3000:
         for _ in range(number_ants):
             # make routes for ant
-            route, pheromones = ant_run(group, instance, pheromones, params, t_0)
+            route, pheromones = ant_run(group_copy, instance, pheromones, params, t_0)
 
             distance = 0
             for j in range(1, len(route)):
-                distance += instance["edge_weight"][group[route[j - 1]]][group[route[j]]]
+                distance += instance["edge_weight"][group_copy[route[j - 1]]][group_copy[route[j]]]
 
             if distance < best_distance:
                 best_distance = distance
@@ -147,7 +153,7 @@ def aco(instance, group, params):
     best_route.pop()
 
     for i in range(len(best_route)):
-        best_route[i] = group[best_route[i]]
+        best_route[i] = group_copy[best_route[i]]
 
     
     return best_route, best_distance

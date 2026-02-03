@@ -1,5 +1,4 @@
 import vrplib
-import random
 import numpy as np
 
 from clarke_wright import solve_clarke_wright
@@ -41,5 +40,7 @@ def solve_problem(path, params):
     for items in solution_ants.items():
         print(items[0], ": ", items[1])
 
+    print(round(solution["cost"]/optimal_solution["cost"], 2))
+
 params = {"alpha": 0.1, "beta": 2, "q0": 0.9}
-solve_problem("instances/E/E-n76-k14.vrp", params)
+solve_problem("instances/P/P-n16-k8.vrp", params)
