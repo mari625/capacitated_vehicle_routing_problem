@@ -59,7 +59,7 @@ def ant_run(group, instance, pheromones, params, t_0):
 
         max_utility = max(utilities)
 
-        if max_utility ==0:
+        if max_utility == 0:
             break
 
         chosen_index = 0
@@ -116,6 +116,7 @@ def aco(instance, group, params):
     prev_best_distance = best_distance
 
     number_ants = 10 ## maybe hyperpar
+    eps = 0.00001
 
     best_route = []
 
@@ -132,15 +133,15 @@ def aco(instance, group, params):
             for j in range(1, len(route)):
                 distance += instance["edge_weight"][group_copy[route[j - 1]]][group_copy[route[j]]]
 
-            if distance < best_distance:
+            if best_distance - distance >= eps:
                 best_distance = distance
-                best_route = route
+                best_route = route.copy()
 
         # update global pheromones
         pheromones = global_update(pheromones, params, best_route, best_distance)
 
         # update acumulated number
-        if prev_best_distance == best_distance:
+        if prev_best_distance == float("inf") or abs(prev_best_distance - best_distance) <= eps:
             accumulated_number += 1
         else:
             accumulated_number = 0

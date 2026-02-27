@@ -43,4 +43,4 @@ def solve_problem(path, params):
     print(round(solution["cost"]/optimal_solution["cost"], 2))
 
 params = {"alpha": 0.1, "beta": 2, "q0": 0.9}
-solve_problem("instances/P/P-n16-k8.vrp", params)
+solve_problem("instances/P/P-n22-k8.vrp", params)

@@ -6,34 +6,34 @@ class dsu:
         self.weight = [el for el in instance["demand"]]
         self.first = [i for i in range(number)]
  
-    def get(self, vertice):
-        if vertice == self.first[vertice]:
-            return vertice
+    def get(self, vertex):
+        if vertex == self.first[vertex]:
+            return vertex
 
-        self.first[vertice] = self.get(self.first[vertice])
-        return self.first[vertice]
+        self.first[vertex] = self.get(self.first[vertex])
+        return self.first[vertex]
     
-    def get_weight(self, vertice):
-        return self.weight[self.get(vertice)]
+    def get_weight(self, vertex):
+        return self.weight[self.get(vertex)]
     
-    def unite(self, vertice_0, vertice_1):
-        vertice_0 = self.get(vertice_0)
-        vertice_1 = self.get(vertice_1)
+    def unite(self, vertex_0, vertex_1):
+        vertex_0 = self.get(vertex_0)
+        vertex_1 = self.get(vertex_1)
 
-        if vertice_0 == vertice_1:
+        if vertex_0 == vertex_1:
             return
 
-        self.weight[vertice_0] += self.weight[vertice_1]
+        self.weight[vertex_0] += self.weight[vertex_1]
 
-        # vertice_0 is in end of the first way
-        self.first[vertice_1] = vertice_0
+        # vertex_0 is in end of the first way
+        self.first[vertex_1] = vertex_0
 
 
 def solve_clarke_wright(instance, number_vehicles, depot):
     savings = []
 
-    next_vertice = [depot for i in range(instance["dimension"])]
-    prev_vertice = [depot for i in range(instance["dimension"])]
+    next_vertex = [depot for i in range(instance["dimension"])]
+    prev_vertex = [depot for i in range(instance["dimension"])]
 
     first_in_path = dsu(instance)
 
@@ -59,10 +59,11 @@ def solve_clarke_wright(instance, number_vehicles, depot):
         if first_in_path.get(begin) == first_in_path.get(end):
             continue
 
-        if prev_vertice[begin] == depot and next_vertice[end] == depot:
-            if first_in_path.get_weight(begin) + first_in_path.get_weight(end) < instance["capacity"]:
-                next_vertice[end] = begin
-                prev_vertice[begin] = end
+        if prev_vertex[begin] == depot and next_vertex[end] == depot:
+            if first_in_path.get_weight(begin) + first_in_path.get_weight(end) <= instance["capacity"]:
+
+                next_vertex[end] = begin
+                prev_vertex[begin] = end
 
                 first_in_path.unite(end, begin)
 
@@ -70,20 +71,25 @@ def solve_clarke_wright(instance, number_vehicles, depot):
         
         if number_routes == number_vehicles:
             break
+
+    roots = set()
+    for i in range(instance["dimension"]):
+        if i != depot:
+            roots.add(first_in_path.get(i))
     
     routes = []
     cost = 0
 
-    for begin in np.unique([first_in_path.get(el) for el in first_in_path.first]):
-        if begin == 0:
+    for begin in roots:
+        if begin == depot:
             continue
 
         route = [int(begin)]
         
         cost += instance["edge_weight"][depot][route[-1]]
 
-        while next_vertice[route[-1]] != depot:
-            route.append(next_vertice[route[-1]])
+        while next_vertex[route[-1]] != depot:
+            route.append(next_vertex[route[-1]])
             cost += instance["edge_weight"][route[-2]][route[-1]]
 
         cost += instance["edge_weight"][route[-1]][depot]
