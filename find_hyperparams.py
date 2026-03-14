@@ -131,9 +131,9 @@ def find_hyperparams_fire(alpha, beta, q_0):
 
 
 if __name__ == '__main__':
-    #alpha, beta, q_0 = find_hyperparams_ants()
+    alpha, beta, q_0 = find_hyperparams_ants()
 
-    #print(f'alpha: {alpha}, beta: {beta}, q_0: {q_0}')
+    print(f'alpha: {alpha}, beta: {beta}, q_0: {q_0}')
 
     theta_0, mult = find_hyperparams_fire(alpha=0.1, beta=2, q_0=0.9)
 
