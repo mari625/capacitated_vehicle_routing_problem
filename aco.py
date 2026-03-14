@@ -86,6 +86,7 @@ def ant_run(group, instance, pheromones, params, t_0):
 
         # local update
         pheromones[route[-2]][route[-1]] = local_pheromone_update(route[-2], route[-1], pheromones, params, t_0)
+        pheromones[route[-1]][route[-2]] = local_pheromone_update(route[-2], route[-1], pheromones, params, t_0)
 
     # add depot to route
     route.append(depot)
@@ -93,12 +94,16 @@ def ant_run(group, instance, pheromones, params, t_0):
     # update local pheromone on route to depot
     pheromones[route[-2]][route[-1]] = \
             local_pheromone_update(route[-2], route[-1], pheromones, params, t_0)
+    pheromones[route[-1]][route[-2]] = \
+            local_pheromone_update(route[-2], route[-1], pheromones, params, t_0)
 
     return route, pheromones
 
 def global_update(pheromones, params, route, distance):
     for i in range(1, len(route)):
         pheromones[route[i - 1]][route[i]] = \
+                float(pheromones[route[i - 1]][route[i]] * (1 - params["alpha"]) + params["alpha"] / distance)
+        pheromones[route[i]][route[i - 1]] = \
                 float(pheromones[route[i - 1]][route[i]] * (1 - params["alpha"]) + params["alpha"] / distance)
 
     return pheromones
@@ -115,7 +120,7 @@ def aco(instance, group, params):
     best_distance = float("inf")
     prev_best_distance = best_distance
 
-    number_ants = 10 ## maybe hyperpar
+    number_ants = 10
     eps = 0.00001
 
     best_route = []
