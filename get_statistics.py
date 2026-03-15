@@ -6,7 +6,7 @@ import pandas as pd
 from solution import solve_problem
 
 
-params_ants = {"alpha": 0.3, "beta": 3, "q0": 0.8} #0.2
+params_ants = {"alpha": 0.3, "beta": 3, "q0": 0.8}
 params_outsiders = {"theta_0": 50, "mult": 0.95}
 
 
