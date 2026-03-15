@@ -9,7 +9,6 @@ from simulated_annealing import solve_outsiders
 def find_hyperparams_ants():
     examples = [
         'instances/E/E-n13-k4.vrp',
-        'instances/E/E-n23-k3.vrp',
         'instances/E/E-n33-k4.vrp',
         'instances/E/E-n76-k7.vrp',
         'instances/F/F-n135-k7.vrp',
@@ -21,8 +20,8 @@ def find_hyperparams_ants():
     ]
 
     list_alpha = [0.1, 0.3, 0.5]
-    list_beta = [1, 2, 5]
-    list_q_0 = [0.7, 0.9]
+    list_beta = [1, 2, 3]
+    list_q_0 = [0.8, 0.9]
 
     min_ratio = 2
 
@@ -51,6 +50,7 @@ def find_hyperparams_ants():
                     best_q_0 = q_0
 
                     print("total", total_ratio)
+                    print(best_alpha, best_beta, best_q_0)
 
     return best_alpha, best_beta, best_q_0
 
@@ -135,6 +135,6 @@ if __name__ == '__main__':
 
     print(f'alpha: {alpha}, beta: {beta}, q_0: {q_0}')
 
-    theta_0, mult = find_hyperparams_fire(alpha=0.1, beta=2, q_0=0.9)
+    #theta_0, mult = find_hyperparams_fire(alpha=0.1, beta=2, q_0=0.9)
 
-    print(f'theta_0: {theta_0}, mult: {mult}')
+    #print(f'theta_0: {theta_0}, mult: {mult}')

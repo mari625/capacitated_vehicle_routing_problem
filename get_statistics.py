@@ -6,7 +6,7 @@ import pandas as pd
 from solution import solve_problem
 
 
-params_ants = {"alpha": 0.1, "beta": 2, "q0": 0.9}
+params_ants = {"alpha": 0.3, "beta": 3, "q0": 0.8} #0.2
 params_outsiders = {"theta_0": 50, "mult": 0.95}
 
 
@@ -51,4 +51,4 @@ if __name__ == '__main__':
     print(f"M: {ratio_M:.2f}")
     print(f"P: {ratio_P:.2f}")
 
-    time_stats.to_csv('time_results.csv')
+    time_stats.to_csv('time_results_0.csv')
